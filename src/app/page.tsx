@@ -5,7 +5,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Volume2, Play, Pause } from "lucide-react";
+import { Volume2, Play, Pause, LoaderCircle } from "lucide-react";
 
 import { PlayAudioButton } from "@/components/audio-button";
 
@@ -13,7 +13,6 @@ export default function ALSCommunicationInterface() {
 	const [message, setMessage] = useState("");
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
 		null,
@@ -127,9 +126,13 @@ export default function ALSCommunicationInterface() {
 								onClick={handleSpeak2}
 								size="lg"
 								className="gap-2 text-lg"
-								disabled={!message}
+								disabled={!message || isGenarating}
 							>
-								<Volume2 className="h-5 w-5" />
+								{isGenarating ? (
+									<LoaderCircle className="h-5 w-5 spin" />
+								) : (
+									<Volume2 className="h-5 w-5" />
+								)}
 								Falar
 							</Button>
 							{audioElement && (

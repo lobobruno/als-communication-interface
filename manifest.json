@@ -1,0 +1,24 @@
+{
+  "name": "ALS Communication Interface",
+  "short_name": "ALS Comm",
+  "description": "An adaptive communication tool for ALS patients using eye-tracking and predictive text.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "purpose": "maskable",
+      "sizes": "512x512",
+      "src": "icon512_maskable.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any",
+      "sizes": "512x512",
+      "src": "icon512_maskable.png",
+      "type": "image/png"
+    }
+  ]
+}
