@@ -23,8 +23,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
 	title: "AL Voice",
-	description:
-		"An adaptive communication tool for ALS patients using eye-tracking and predictive text.",
+	description: "An adaptive communication tool for ALS patients",
 	manifest: "/manifest.json",
 	/*openGraph: {
 		type: "website",
