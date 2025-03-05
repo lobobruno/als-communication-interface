@@ -25,5 +25,9 @@ export const PlayAudioButton: React.FC<PlayAudioButtonProps> = ({
 		}
 	};
 
-	return <Button onClick={handleClick}>{text}</Button>;
+	return (
+		<Button size={"lg"} onClick={handleClick}>
+			<span className="text-xl">{text}</span>
+		</Button>
+	);
 };

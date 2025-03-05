@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const VOICE_ID = "tybLvZ7YcyfuLhwKwbcA"; //diogo
+const VOICE_ID = process.env.VOICE_ID;
 
 export async function POST(request: NextRequest) {
 	try {

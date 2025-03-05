@@ -1,28 +1,43 @@
 "use client";
 import { ElevenLabsClient, play } from "elevenlabs";
 
-import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Volume2, Play, Pause, LoaderCircle } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { LoaderCircle, Pause, Play, Volume2 } from "lucide-react";
+import { useRef, useState } from "react";
 
 import { PlayAudioButton } from "@/components/audio-button";
+import { cn } from "@/lib/utils";
+
+interface AudioData {
+	audio: HTMLAudioElement;
+	text: string;
+}
 
 export default function ALSCommunicationInterface() {
 	const [message, setMessage] = useState("");
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	const [error, setError] = useState<string | null>(null);
-	const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
-		null,
-	);
+
+	const [audioElements, setAudioElements] = useState<AudioData[]>([]);
+	const audioElement = audioElements[0]?.audio;
+
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isGenarating, setIsGenarating] = useState(false);
 
 	const handleSpeak2 = async () => {
 		try {
 			setIsGenarating(true);
+			const audioExists = audioElements.find((a) => a.text === message);
+			if (audioExists) {
+				audioExists.audio.play();
+				setIsPlaying(true);
+				setIsGenarating(false);
+				return;
+			}
+
 			const response = await fetch("/api/text-to-speech", {
 				method: "POST",
 				headers: {
@@ -38,8 +53,9 @@ export default function ALSCommunicationInterface() {
 				throw new Error(data.error || "Erro ao buscar audio");
 			}
 			const audio = new Audio(`data:audio/mpeg;base64,${data.audioBase64}`);
-			setAudioElement(audio);
+			setAudioElements((p) => [...p.slice(-3), { audio, text: message }]);
 			audio?.play();
+			setIsPlaying(true);
 			audio.onended = () => {
 				setIsPlaying(false);
 			};
@@ -53,21 +69,40 @@ export default function ALSCommunicationInterface() {
 		}
 	};
 
-	const handlePlayPause = () => {
-		if (!audioElement) return;
+	const handlePlayPause = (audio: HTMLAudioElement) => {
+		if (!audio) return;
 		if (isPlaying) {
-			audioElement.pause();
+			audio.pause();
 		} else {
-			audioElement.play();
+			audio.play();
 		}
 		setIsPlaying((p) => !p);
 	};
 
 	const actionsButtons = [
-		{ txt: "Água", src: "/audio/agua.mp3" },
-		{ txt: "Fome", src: "/audio/fome.mp3" },
-		{ txt: "Sim", src: "/audio/sim.mp3" },
-		{ txt: "Não", src: "/audio/nao.mp3" },
+		[
+			{ txt: "Sede", src: "/audio/sede.mp3" },
+			{ txt: "Fome", src: "/audio/fome.mp3" },
+			{ txt: "Calor", src: "/audio/calor.mp3" },
+			{ txt: "Frio", src: "/audio/frio.mp3" },
+		],
+		[
+			{ txt: "Barulho", src: "/audio/barulho.mp3" },
+			{ txt: "Dor", src: "/audio/dor.mp3" },
+			{ txt: "Dor (Peito)", src: "/audio/dor-peito.mp3" },
+			{ txt: "Falta de Ar", src: "/audio/falta-ar.mp3" },
+		],
+		[
+			{ txt: "Banheiro", src: "/audio/banheiro.mp3" },
+			{ txt: "Deitar", src: "/audio/deitar.mp3" },
+			{ txt: "Sentar", src: "/audio/sentar.mp3" },
+			{ txt: "Levantar", src: "/audio/levantar.mp3" },
+			{ txt: "Posição", src: "/audio/posicao.mp3" },
+		],
+		[
+			{ txt: "Sim", src: "/audio/sim.mp3" },
+			{ txt: "Não", src: "/audio/nao.mp3" },
+		],
 	];
 
 	// Function to speak the message using text-to-speech
@@ -137,7 +172,7 @@ export default function ALSCommunicationInterface() {
 							</Button>
 							{audioElement && (
 								<Button
-									onClick={handlePlayPause}
+									onClick={() => handlePlayPause(audioElement)}
 									size="lg"
 									className="gap-2 text-lg"
 								>
@@ -153,13 +188,50 @@ export default function ALSCommunicationInterface() {
 
 					{/* Quick access buttons */}
 					<div className="mt-8">
-						<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-							{actionsButtons.map((e, index) => (
-								<PlayAudioButton
-									key={`btn-${e.txt}-${index}`}
-									text={e.txt}
-									audioSrc={e.src}
-								/>
+						<div
+							className={cn("grid  gap-4", {
+								"grid-cols-2": actionsButtons.length === 2,
+								"grid-cols-3": actionsButtons.length === 3,
+								"grid-cols-4": actionsButtons.length === 4,
+							})}
+						>
+							{actionsButtons.map((g, index) => (
+								<div
+									className="flex flex-col gap-3 justify-start"
+									key={`group-${
+										// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+										index
+									}`}
+								>
+									{g.map((e, index) => (
+										<PlayAudioButton
+											key={`btn-${e.txt}-${index}`}
+											text={e.txt}
+											audioSrc={e.src}
+										/>
+									))}
+								</div>
+							))}
+						</div>
+					</div>
+					<div className="mt-20">
+						<div className={cn("grid  gap-4")}>
+							{audioElements.toReversed().map((e, index) => (
+								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+								<div key={`audio-${index}`} className="grid grid-cols-8 gap-4">
+									<p className="col-span-7 truncate">{e.text}</p>
+									<Button
+										onClick={() => handlePlayPause(e.audio)}
+										size="lg"
+										className="gap-2 text-lg max-w-[50px]"
+									>
+										{isPlaying ? (
+											<Pause className="h-5 w-5" />
+										) : (
+											<Play className="h-5 w-5" />
+										)}
+									</Button>
+								</div>
 							))}
 						</div>
 					</div>
