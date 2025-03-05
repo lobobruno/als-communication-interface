@@ -4,7 +4,7 @@ import { ElevenLabsClient, play } from "elevenlabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { LoaderCircle, Pause, Play, Volume2 } from "lucide-react";
+import { LoaderCircle, Pause, Play, Share, Volume2 } from "lucide-react";
 import { useRef, useState } from "react";
 
 import { PlayAudioButton } from "@/components/audio-button";
@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 interface AudioData {
 	audio: HTMLAudioElement;
 	text: string;
+	b64: string;
 }
 
 export default function ALSCommunicationInterface() {
@@ -24,8 +25,40 @@ export default function ALSCommunicationInterface() {
 	const [audioElements, setAudioElements] = useState<AudioData[]>([]);
 	const audioElement = audioElements[0]?.audio;
 
-	const [isPlaying, setIsPlaying] = useState(false);
+	const [isPlaying, setIsPlaying] = useState<string | null>(null);
 	const [isGenarating, setIsGenarating] = useState(false);
+
+	const handleShare = async (audioBase64: string) => {
+		try {
+			if (!navigator.canShare) {
+				alert("Sharing not supported on this browser.");
+				return;
+			}
+
+			// Convert Base64 to a Blob
+			const byteCharacters = atob(audioBase64);
+			const byteNumbers = new Array(byteCharacters.length)
+				.fill(null)
+				.map((_, i) => byteCharacters.charCodeAt(i));
+			const byteArray = new Uint8Array(byteNumbers);
+			const blob = new Blob([byteArray], { type: "audio/mpeg" });
+
+			// Create a File object
+			const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
+
+			if (navigator.canShare({ files: [file] })) {
+				await navigator.share({
+					title: "Audio",
+					text: "Escute o áudio",
+					files: [file],
+				});
+			} else {
+				alert("File sharing is not supported on this device.");
+			}
+		} catch (error) {
+			console.error("Error sharing:", error);
+		}
+	};
 
 	const handleSpeak2 = async () => {
 		try {
@@ -33,7 +66,7 @@ export default function ALSCommunicationInterface() {
 			const audioExists = audioElements.find((a) => a.text === message);
 			if (audioExists) {
 				audioExists.audio.play();
-				setIsPlaying(true);
+				setIsPlaying(audioExists.text);
 				setIsGenarating(false);
 				return;
 			}
@@ -53,11 +86,14 @@ export default function ALSCommunicationInterface() {
 				throw new Error(data.error || "Erro ao buscar audio");
 			}
 			const audio = new Audio(`data:audio/mpeg;base64,${data.audioBase64}`);
-			setAudioElements((p) => [...p.slice(-3), { audio, text: message }]);
+			setAudioElements((p) => [
+				...p.slice(-3),
+				{ audio, text: message, b64: data.audioBase64 },
+			]);
 			audio?.play();
-			setIsPlaying(true);
+			setIsPlaying(message);
 			audio.onended = () => {
-				setIsPlaying(false);
+				setIsPlaying(null);
 			};
 			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		} catch (err: any) {
@@ -69,14 +105,19 @@ export default function ALSCommunicationInterface() {
 		}
 	};
 
-	const handlePlayPause = (audio: HTMLAudioElement) => {
-		if (!audio) return;
-		if (isPlaying) {
-			audio.pause();
-		} else {
-			audio.play();
+	const handlePlayPause = (data: AudioData) => {
+		for (const a of audioElements) {
+			a.audio.pause();
+			a.audio.currentTime = 0;
 		}
-		setIsPlaying((p) => !p);
+		if (!data) return;
+		if (isPlaying === data.text) {
+			data.audio.pause();
+			setIsPlaying(null);
+		} else {
+			data.audio.play();
+			setIsPlaying(data.text);
+		}
 	};
 
 	const actionsButtons = [
@@ -161,7 +202,7 @@ export default function ALSCommunicationInterface() {
 								onClick={handleSpeak2}
 								size="lg"
 								className="gap-2 text-lg"
-								disabled={!message || isGenarating}
+								disabled={!message || isGenarating || isPlaying === message}
 							>
 								{isGenarating ? (
 									<LoaderCircle className="h-5 w-5 spin" />
@@ -170,19 +211,6 @@ export default function ALSCommunicationInterface() {
 								)}
 								Falar
 							</Button>
-							{audioElement && (
-								<Button
-									onClick={() => handlePlayPause(audioElement)}
-									size="lg"
-									className="gap-2 text-lg"
-								>
-									{isPlaying ? (
-										<Pause className="h-5 w-5" />
-									) : (
-										<Play className="h-5 w-5" />
-									)}
-								</Button>
-							)}
 						</div>
 					</div>
 
@@ -218,18 +246,25 @@ export default function ALSCommunicationInterface() {
 						<div className={cn("grid  gap-4")}>
 							{audioElements.toReversed().map((e, index) => (
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-								<div key={`audio-${index}`} className="grid grid-cols-8 gap-4">
-									<p className="col-span-7 truncate">{e.text}</p>
+								<div key={`audio-${index}`} className="grid grid-cols-10 gap-4">
+									<p className="col-span-8 truncate">{e.text}</p>
 									<Button
-										onClick={() => handlePlayPause(e.audio)}
+										onClick={() => handlePlayPause(e)}
 										size="lg"
 										className="gap-2 text-lg max-w-[50px]"
 									>
-										{isPlaying ? (
+										{isPlaying === e.text ? (
 											<Pause className="h-5 w-5" />
 										) : (
 											<Play className="h-5 w-5" />
 										)}
+									</Button>
+									<Button
+										onClick={() => handleShare(e.b64)}
+										size="lg"
+										className="gap-2 text-lg max-w-[50px]"
+									>
+										<Share className="h-5 w-5" />
 									</Button>
 								</div>
 							))}
