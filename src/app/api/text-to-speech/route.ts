@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 const VOICE_ID = process.env.VOICE_ID;
+const VOICE_SPEED = process.env.VOICE_SPEED || 0.7;
 
 export async function POST(request: NextRequest) {
 	try {
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
 					voice_settings: {
 						stability: 0.6,
 						similarity_boost: 0.9,
-						speed: 0.9,
+						speed: VOICE_SPEED,
 					},
 				}),
 			},
