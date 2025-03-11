@@ -13,6 +13,7 @@ export const PlayAudioButton: React.FC<PlayAudioButtonProps> = ({
 	audioSrc,
 }) => {
 	const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+	const [isPlaying, setIsPlaying] = useState(false);
 
 	useEffect(() => {
 		setAudio(new Audio(audioSrc));
@@ -20,14 +21,26 @@ export const PlayAudioButton: React.FC<PlayAudioButtonProps> = ({
 
 	const handleClick = () => {
 		if (audio) {
-			audio.currentTime = 0; // Restart audio if already playing
-			audio.play();
+			try {
+				setIsPlaying(true);
+				audio.currentTime = 0; // Restart audio if already playing
+				audio.play();
+			} catch (e) {
+				console.error(e);
+			} finally {
+				setIsPlaying(false);
+			}
 		}
 	};
 
 	return (
-		<Button size={"lg"} onClick={handleClick}>
-			<span className="text-xl">{text}</span>
+		<Button
+			size={"lg"}
+			onClick={handleClick}
+			disabled={isPlaying}
+			variant={isPlaying ? "ghost" : "default"}
+		>
+			<span className="text-lg sm:text-xl">{text}</span>
 		</Button>
 	);
 };

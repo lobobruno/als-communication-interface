@@ -144,7 +144,12 @@ export default function ALSCommunicationInterface() {
 			{ txt: "Sim", src: "/audio/sim.mp3" },
 			{ txt: "Não", src: "/audio/nao.mp3" },
 		],
-	];
+	].map((g) =>
+		g.map((e) => ({
+			...e,
+			src: `${e.src}?t=${Math.floor(Date.now() / 86400000)}`,
+		})),
+	); // Add timestamp to avoid cache
 
 	// Function to speak the message using text-to-speech
 	const failSafeSpeakMessage = () => {
@@ -183,7 +188,7 @@ export default function ALSCommunicationInterface() {
 							ref={textareaRef}
 							value={message}
 							onChange={(e) => setMessage(e.target.value)}
-							placeholder="Type your message here..."
+							placeholder="Escreva aqui..."
 							className="w-full min-h-[150px] text-xl p-4 border-2 focus:border-primary"
 							aria-label="Message input"
 						/>
@@ -244,30 +249,36 @@ export default function ALSCommunicationInterface() {
 					</div>
 					<div className="mt-20">
 						<div className={cn("grid  gap-4")}>
-							{audioElements.toReversed().map((e, index) => (
-								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-								<div key={`audio-${index}`} className="grid grid-cols-10 gap-4">
-									<p className="col-span-8 truncate">{e.text}</p>
-									<Button
-										onClick={() => handlePlayPause(e)}
-										size="lg"
-										className="gap-2 text-lg max-w-[50px]"
+							{audioElements
+								.slice()
+								.reverse()
+								.map((e, index) => (
+									<div
+										// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+										key={`audio-${index}`}
+										className="grid grid-cols-10 gap-4"
 									>
-										{isPlaying === e.text ? (
-											<Pause className="h-5 w-5" />
-										) : (
-											<Play className="h-5 w-5" />
-										)}
-									</Button>
-									<Button
-										onClick={() => handleShare(e.b64)}
-										size="lg"
-										className="gap-2 text-lg max-w-[50px]"
-									>
-										<Share className="h-5 w-5" />
-									</Button>
-								</div>
-							))}
+										<p className="col-span-8 truncate">{e.text}</p>
+										<Button
+											onClick={() => handlePlayPause(e)}
+											size="lg"
+											className="gap-2 text-lg max-w-[50px]"
+										>
+											{isPlaying === e.text ? (
+												<Pause className="h-5 w-5" />
+											) : (
+												<Play className="h-5 w-5" />
+											)}
+										</Button>
+										<Button
+											onClick={() => handleShare(e.b64)}
+											size="lg"
+											className="gap-2 text-lg max-w-[50px]"
+										>
+											<Share className="h-5 w-5" />
+										</Button>
+									</div>
+								))}
 						</div>
 					</div>
 				</CardContent>

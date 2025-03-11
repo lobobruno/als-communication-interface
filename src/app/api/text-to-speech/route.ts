@@ -1,7 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 const VOICE_ID = process.env.VOICE_ID;
-const VOICE_SPEED = process.env.VOICE_SPEED || 0.7;
+const VOICE_SPEED = process.env.VOICE_SPEED || 0.8;
+const VOICE_SIMILARITY_BOOST = process.env.VOICE_SIMILARITY_BOOST || 0.9;
+const VOICE_STABILITY = process.env.VOICE_STABILITY || 0.6;
+const VOICE_MODEL = process.env.VOICE_MODEL || "eleven_multilingual_v2";
 
 export async function POST(request: NextRequest) {
 	try {
@@ -34,10 +37,10 @@ export async function POST(request: NextRequest) {
 				},
 				body: JSON.stringify({
 					text,
-					model_id: "eleven_multilingual_v2",
+					model_id: VOICE_MODEL,
 					voice_settings: {
-						stability: 0.6,
-						similarity_boost: 0.9,
+						stability: VOICE_STABILITY,
+						similarity_boost: VOICE_SIMILARITY_BOOST,
 						speed: VOICE_SPEED,
 					},
 				}),
