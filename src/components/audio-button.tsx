@@ -40,7 +40,7 @@ export const PlayAudioButton: React.FC<PlayAudioButtonProps> = ({
 			disabled={isPlaying}
 			variant={isPlaying ? "ghost" : "default"}
 		>
-			<span className="text-lg sm:text-xl">{text}</span>
+			<span className="text-lg sm:text-3xl">{text}</span>
 		</Button>
 	);
 };

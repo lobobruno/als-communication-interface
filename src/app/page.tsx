@@ -189,7 +189,7 @@ export default function ALSCommunicationInterface() {
 							value={message}
 							onChange={(e) => setMessage(e.target.value)}
 							placeholder="Escreva aqui..."
-							className="w-full min-h-[150px] text-xl p-4 border-2 focus:border-primary"
+							className="w-full min-h-[150px] text-2xl p-4 border-2 focus:border-primary"
 							aria-label="Message input"
 						/>
 
@@ -198,7 +198,7 @@ export default function ALSCommunicationInterface() {
 								variant="outline"
 								size="lg"
 								onClick={clearMessage}
-								className="text-lg"
+								className="text-xl"
 							>
 								Limpar
 							</Button>
@@ -206,7 +206,7 @@ export default function ALSCommunicationInterface() {
 								//onClick={speakMessage}
 								onClick={handleSpeak2}
 								size="lg"
-								className="gap-2 text-lg"
+								className="gap-2 text-xl"
 								disabled={!message || isGenarating || isPlaying === message}
 							>
 								{isGenarating ? (
