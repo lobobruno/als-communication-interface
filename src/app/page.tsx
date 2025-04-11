@@ -4,7 +4,7 @@ import { ElevenLabsClient, play } from "elevenlabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { LoaderCircle, Pause, Play, Share, Volume2 } from "lucide-react";
+import { LoaderCircle, Pause, Play, Share, Volume2, RefreshCcw } from "lucide-react";
 import { useRef, useState } from "react";
 
 import { PlayAudioButton } from "@/components/audio-button";
@@ -176,20 +176,26 @@ export default function ALSCommunicationInterface() {
 	return (
 		<div className="min-h-screen p-4 bg-gray-50">
 			<Card className="max-w-4xl mx-auto shadow-lg">
-				<CardHeader className="">
+				<CardHeader className="relative">
 					<CardTitle className="text-2xl font-bold text-primary text-center">
 						ALVoice
 					</CardTitle>
+					<div className="absolute top-0 right-4">
+						<Button size="sm" onClick={() => window.location.reload()}>
+							<RefreshCcw />
+						</Button>
+					</div>
 				</CardHeader>
 				<CardContent className="p-6">
 					{/* Message input area */}
 					<div className="space-y-4">
 						<Textarea
+							rows={4}
 							ref={textareaRef}
 							value={message}
 							onChange={(e) => setMessage(e.target.value)}
 							placeholder="Escreva aqui..."
-							className="w-full min-h-[150px] text-2xl p-4 border-2 focus:border-primary"
+							className="w-full min-h-[225px] text-2xl p-4 border-2 focus:border-primary"
 							aria-label="Message input"
 						/>
 
