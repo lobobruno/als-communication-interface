@@ -4,7 +4,14 @@ import { ElevenLabsClient, play } from "elevenlabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { LoaderCircle, Pause, Play, Share, Volume2, RefreshCcw } from "lucide-react";
+import {
+	LoaderCircle,
+	Pause,
+	Play,
+	RefreshCcw,
+	Share,
+	Volume2,
+} from "lucide-react";
 import { useRef, useState } from "react";
 
 import { PlayAudioButton } from "@/components/audio-button";
@@ -138,7 +145,7 @@ export default function ALSCommunicationInterface() {
 			{ txt: "Deitar", src: "/audio/deitar.mp3" },
 			{ txt: "Sentar", src: "/audio/sentar.mp3" },
 			{ txt: "Levantar", src: "/audio/levantar.mp3" },
-			{ txt: "Posição", src: "/audio/posicao.mp3" },
+			// { txt: "Posição", src: "/audio/posicao.mp3" },
 		],
 		[
 			{ txt: "Sim", src: "/audio/sim.mp3" },
@@ -190,12 +197,12 @@ export default function ALSCommunicationInterface() {
 					{/* Message input area */}
 					<div className="space-y-4">
 						<Textarea
-							rows={4}
+							rows={10}
 							ref={textareaRef}
 							value={message}
 							onChange={(e) => setMessage(e.target.value)}
 							placeholder="Escreva aqui..."
-							className="w-full min-h-[225px] text-2xl p-4 border-2 focus:border-primary"
+							className="w-full min-h-[450px] text-4xl p-4 border-2 focus:border-primary"
 							aria-label="Message input"
 						/>
 
@@ -204,7 +211,7 @@ export default function ALSCommunicationInterface() {
 								variant="outline"
 								size="lg"
 								onClick={clearMessage}
-								className="text-xl"
+								className="text-2xl"
 							>
 								Limpar
 							</Button>
@@ -212,7 +219,7 @@ export default function ALSCommunicationInterface() {
 								//onClick={speakMessage}
 								onClick={handleSpeak2}
 								size="lg"
-								className="gap-2 text-xl"
+								className="gap-2 text-2xl"
 								disabled={!message || isGenarating || isPlaying === message}
 							>
 								{isGenarating ? (
