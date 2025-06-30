@@ -211,7 +211,7 @@ export default function ALSCommunicationInterface() {
 								variant="outline"
 								size="lg"
 								onClick={clearMessage}
-								className="text-4xl m-4 p-8"
+								className="text-4xl m-4 p-14 "
 							>
 								Limpar
 							</Button>
@@ -219,7 +219,7 @@ export default function ALSCommunicationInterface() {
 								//onClick={speakMessage}
 								onClick={handleSpeak2}
 								size="lg"
-								className="gap-2 text-4xl m-4 p-8"
+								className="gap-2 text-4xl m-4 p-14 "
 								disabled={!message || isGenarating || isPlaying === message}
 							>
 								{isGenarating ? (
@@ -227,7 +227,7 @@ export default function ALSCommunicationInterface() {
 								) : (
 									<Volume2 className="h-5 w-5" />
 								)}
-								Falar
+								F A L A R
 							</Button>
 						</div>
 					</div>
