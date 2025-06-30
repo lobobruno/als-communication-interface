@@ -181,7 +181,7 @@ export default function ALSCommunicationInterface() {
 	};
 
 	return (
-		<div className="min-h-screen p-4 bg-gray-50">
+		<div className="min-h-screen p-4 bg-gray-50 select-none">
 			<Card className="max-w-4xl mx-auto shadow-lg">
 				<CardHeader className="relative">
 					<CardTitle className="text-2xl font-bold text-primary text-center">
@@ -206,12 +206,12 @@ export default function ALSCommunicationInterface() {
 							aria-label="Message input"
 						/>
 
-						<div className="flex flex-wrap gap-3 justify-end">
+						<div className="flex flex-wrap gap-3 justify-between">
 							<Button
 								variant="outline"
 								size="lg"
 								onClick={clearMessage}
-								className="text-2xl"
+								className="text-4xl m-2"
 							>
 								Limpar
 							</Button>
@@ -219,7 +219,7 @@ export default function ALSCommunicationInterface() {
 								//onClick={speakMessage}
 								onClick={handleSpeak2}
 								size="lg"
-								className="gap-2 text-2xl"
+								className="gap-2 text-4xl m-2"
 								disabled={!message || isGenarating || isPlaying === message}
 							>
 								{isGenarating ? (
