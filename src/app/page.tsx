@@ -211,7 +211,7 @@ export default function ALSCommunicationInterface() {
 								variant="outline"
 								size="lg"
 								onClick={clearMessage}
-								className="text-4xl m-2"
+								className="text-4xl m-4 p-8"
 							>
 								Limpar
 							</Button>
@@ -219,7 +219,7 @@ export default function ALSCommunicationInterface() {
 								//onClick={speakMessage}
 								onClick={handleSpeak2}
 								size="lg"
-								className="gap-2 text-4xl m-2"
+								className="gap-2 text-4xl m-4 p-8"
 								disabled={!message || isGenarating || isPlaying === message}
 							>
 								{isGenarating ? (
