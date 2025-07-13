@@ -195,7 +195,7 @@ export default function ALSCommunicationInterface() {
 				</CardHeader>
 				<CardContent className="p-6">
 					{/* Message input area */}
-					<div className="space-y-4">
+					<div className="space-y-4 mb-8">
 						<Textarea
 							rows={10}
 							ref={textareaRef}
@@ -233,7 +233,7 @@ export default function ALSCommunicationInterface() {
 					</div>
 
 					{/* Quick access buttons */}
-					<div className="mt-8">
+					<div className="mt-8 hidden">
 						<div
 							className={cn("grid  gap-4", {
 								"grid-cols-2": actionsButtons.length === 2,
@@ -247,7 +247,7 @@ export default function ALSCommunicationInterface() {
 									key={`group-${
 										// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 										index
-									}`}
+										}`}
 								>
 									{g.map((e, index) => (
 										<PlayAudioButton
